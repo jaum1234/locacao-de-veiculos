@@ -91,23 +91,11 @@ void listagem_locacoes()
 
 }
 
-void verificar_registro(char cpf[], Cliente clientes_cadastrados[])
-{
-    for (int i = 0; i < 2; i++) {
-        if (cpf == clientes_cadastrados[i].cpf) {
-            printf("CPF ja cadastrado");
-            break;
-        }
-    }
-}
-
-void registrar_cpf(char cpf[], Cliente clientes_cadastrados[])
+void registrar_cpf(char cpf[])
 {
     while (true) {
         printf("CPF: ");
         gets(cpf);
-
-        verificar_registro(cpf, clientes_cadastrados);
 
         if (strlen(cpf) == 11) {
             break;
@@ -119,7 +107,7 @@ void registrar_cpf(char cpf[], Cliente clientes_cadastrados[])
     }
 }
 
-void registrar_nome(char nome[], Cliente clientes_cadastrados[])
+void registrar_nome(char nome[])
 {
     while (true) {
         printf("Nome: ");
@@ -142,13 +130,20 @@ void cadastro_cliente(Cliente clientes[], int &posicao_clientes_cadastrados)
 
     registrar_cpf(clientes[posicao_clientes_cadastrados].cpf);
 
-    registrar_nome(clientes.nome);
+    system("cls");
+
+    registrar_nome(clientes[posicao_clientes_cadastrados].nome);
+
+    system("cls");
+
+    printf("CPF: %s\n", clientes[posicao_clientes_cadastrados].cpf);
+    printf("Nome: %s\n", clientes[posicao_clientes_cadastrados].nome);
 
     printf("\nCliente cadastrado com sucesso!\n");
 
     system("pause");
 
-    clientes_cadastrados[posicao_clientes_cadastrados] = cliente;
+    
     posicao_clientes_cadastrados++;
 }
 
