@@ -31,9 +31,6 @@ struct Veiculo {
     //>= 0
 };
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
 
 
 //MENU DO CADASTRO DE CLIENTES
@@ -62,7 +59,7 @@ void menu_cadastro_cliente()
     }
 
     if(numero_clientes == 1){
-        
+
     }
 
     else if(numero_clientes == 2){
