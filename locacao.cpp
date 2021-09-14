@@ -83,7 +83,7 @@ void listagem_locacoes()
 
     printf("\n---------------------------------------------------------------------------------------------------------------------------------\n");
     printf("CPF\t\tNome\t\t\t\t\t\t\tPlaca\t\tModelo\t\t\t\tData");
-    printf("\n---------------------------------------------------------------------------------------------------------------------------------\n"); 
+    printf("\n---------------------------------------------------------------------------------------------------------------------------------\n");
 
     printf("%-11s\t%-50s\t%-7s\t%-30s\t%02d/%02d/%02d", "99999999999", "Joao vitor de Souza Coura", "xxx-9999", "ford", 1,2,3);
 
@@ -162,7 +162,7 @@ int main()
 
     data_hora_atual(dia, mes, ano, hora, min, seg);
 
-  
+
     cadastro_cliente(clientes, posicao);
     cadastro_cliente(clientes, posicao);
 
@@ -172,6 +172,9 @@ int main()
     //listagem_locacoes();
 
 
-    
+    //João victor Gazitua
+
+
+
 
 }
