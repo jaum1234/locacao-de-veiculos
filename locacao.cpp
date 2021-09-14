@@ -136,14 +136,13 @@ void registrar_nome(char nome[], Cliente clientes_cadastrados[])
     }
 }
 
-void cadastro_cliente(Cliente clientes_cadastrados[], int &posicao_clientes_cadastrados)
+void cadastro_cliente(Cliente clientes[], int &posicao_clientes_cadastrados)
 {
-    Cliente cliente;
     system("cls");
 
-    registrar_cpf(cliente.cpf, clientes_cadastrados);
+    registrar_cpf(clientes[posicao_clientes_cadastrados].cpf);
 
-    registrar_nome(cliente.nome, clientes_cadastrados);
+    registrar_nome(clientes.nome);
 
     printf("\nCliente cadastrado com sucesso!\n");
 
@@ -159,17 +158,16 @@ int main()
     int dia, mes, ano, hora, min, seg;
     int posicao = 0;
 
-    Cliente clientes_cadastrados[50];
-
+    Cliente clientes[50];
 
     data_hora_atual(dia, mes, ano, hora, min, seg);
 
   
-    cadastro_cliente(clientes_cadastrados, posicao);
-    cadastro_cliente(clientes_cadastrados, posicao);
+    cadastro_cliente(clientes, posicao);
+    cadastro_cliente(clientes, posicao);
 
 
-    listagem_clientes(clientes_cadastrados, posicao);
+    listagem_clientes(clientes, posicao);
     //listagem_veiculos();
     //listagem_locacoes();
 
