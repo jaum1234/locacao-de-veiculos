@@ -11,11 +11,11 @@ struct Cliente {
 };
 
 struct Veiculo {
-    char placa[7];
+    char placa[8];
     //XXX9999
     //nao podem existir dois veículos com a mesma placa
 
-    char tipo[1];
+    char tipo;
     //C para carro, M para moto
 
     char modelo[30];
@@ -208,7 +208,7 @@ void data_hora_atual(int &dia, int &mes, int &ano, int &hora, int &min, int &seg
     seg = local_time.tm_sec;
 }
 
-void listagem_clientes(Cliente clientes[], int posicao_clientes_cadastrados)
+void listagem_clientes(Cliente clientes[], int posicao_cliente)
 {
     system("cls");
 
@@ -216,7 +216,7 @@ void listagem_clientes(Cliente clientes[], int posicao_clientes_cadastrados)
     printf("CPF\t\t\tNome");
     printf("\n--------------------------------------------------\n");
 
-    for (int i = 0; i < posicao_clientes_cadastrados; i ++) {
+    for (int i = 0; i < posicao_cliente; i ++) {
         printf("%-11s\t\t%s\n", clientes[i].cpf, clientes[i].nome);
         printf("\t\t\tPlaca: %s\n", "XXX-9999");
         printf("\t\t\tTipo: %c\n", 'c');
@@ -257,11 +257,28 @@ void listagem_locacoes()
 
 }
 
-void registrar_cpf(char cpf[])
+bool is_cpf_repetido(char cpf[], Cliente clientes[], int posicao_cliente)
+{
+    for (int i = 0; i < posicao_cliente; i++) {
+        if (strcmp(cpf, clientes[i].cpf) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void registrar_cpf(char cpf[], Cliente clientes[], int posicao_cliente)
 {
     while (true) {
         printf("CPF: ");
         gets(cpf);
+
+        if (is_cpf_repetido(cpf, clientes, posicao_cliente)) {
+            printf("\nERRO NO CADASTRO. CPF JA CADASTRADO!\n");
+            system("pause");
+            system("cls");
+            continue;
+        }
 
         if (strlen(cpf) == 11) {
             break;
@@ -290,49 +307,224 @@ void registrar_nome(char nome[])
     }
 }
 
-void cadastro_cliente(Cliente clientes[], int &posicao_clientes_cadastrados)
+void cadastrar_cliente(Cliente clientes[], int &posicao_cliente)
 {
     system("cls");
 
-    registrar_cpf(clientes[posicao_clientes_cadastrados].cpf);
+    registrar_cpf(clientes[posicao_cliente].cpf, clientes, posicao_cliente);
+
+    registrar_nome(clientes[posicao_cliente].nome);
 
     system("cls");
 
-    registrar_nome(clientes[posicao_clientes_cadastrados].nome);
-
-    system("cls");
-
-    printf("CPF: %s\n", clientes[posicao_clientes_cadastrados].cpf);
-    printf("Nome: %s\n", clientes[posicao_clientes_cadastrados].nome);
+    printf("CPF: %s\n", clientes[posicao_cliente].cpf);
+    printf("Nome: %s\n", clientes[posicao_cliente].nome);
 
     printf("\nCliente cadastrado com sucesso!\n");
 
     system("pause");
 
     
-    posicao_clientes_cadastrados++;
+    posicao_cliente++;
 }
 
+bool is_placa_repetida(char placa[], Veiculo veiculos[], int posicao)
+{
+    for (int i = 0; i < posicao; i++) {
+        if (strcmp(placa, veiculos[i].placa) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool is_placa_valida(char placa[])
+{
+    bool letras_validas, numeros_validos;
+
+        if (isalpha(placa[0]) && isalpha(placa[1]) && isalpha(placa[2])) {
+            letras_validas = true;
+        } else {
+            letras_validas = false;
+        }
+
+        if (
+            isdigit(placa[3]) && 
+            isdigit(placa[4]) && 
+            isdigit(placa[5]) &&
+            isdigit(placa[6]) 
+            ) {
+            numeros_validos = true;
+        } else {
+            numeros_validos = false;
+        }
+        
+    
+    if (numeros_validos && letras_validas) {
+        return true;
+    }
+    return false;
+}
+
+void registrar_placa(char placa[], Veiculo veiculos[], int posicao_veiculo)
+{
+    while (true) {
+        printf("Placa (XXX9999): ");
+        gets(placa);
+
+        strupr(placa);
+        
+
+        if (is_placa_repetida(placa, veiculos, posicao_veiculo)) {
+            printf("NAO PODEM EXISTIR DOIS VEICULOS COM A MESMA PLACA!\n");
+            system("pause");
+            system("cls");
+            continue;
+        }
+
+        if (!is_placa_valida(placa)) {
+            printf("\nESSE FORMATO DE PLACA NAO E VALIDO!\n- CUIDADO COM OS ESPACOS\n");
+            system("pause");
+            system("cls");
+            continue;
+        };
+
+        if (strlen(placa) == 7) {
+            break;
+        }
+        printf("PLACA INVALIDA! GRANDE DEMAIS.\n");
+        system("pause");
+        system("cls");
+    }
+}
+
+void registrar_tipo(char &tipo)
+{
+    while (true) {
+        
+        printf("Tipo (C-Carro ou M-Moto): ");
+        scanf("%c", &tipo);
+        getchar();
+        toupper(tipo);
+        if (tipo == 'C' || tipo == 'M') {
+            break;
+        }
+        printf("TIPO INVALIDO!\n");
+        system("pause");
+        system("cls");
+        
+    }
+}
+
+void registrar_modelo(char modelo[])
+{
+    while (true) {
+        printf("modelo: ");
+        gets(modelo);
+        strupr(modelo);
+        if (strlen(modelo) <= 30) {
+            break;
+        }
+        printf("MODELO INVALIDO!\n");
+        system("pause");
+        system("cls");
+    }
+}
+
+void registrar_ano_fabricacao(int &ano)
+{
+    while (true) {
+        printf("Ano: ");
+        scanf("%d", &ano);
+
+        if (ano >= 2000 && ano <= 2021) {
+            break;
+        }
+        printf("ANO INVALIDO!\n");
+        system("pause");
+        system("cls");
+    }
+}
+
+void registrar_valor_alocacao(float &valor_alocacao)
+{
+    while (true) {
+        printf("Valor da alocacao/dia: ");
+        scanf("%f", &valor_alocacao);
+
+        
+        if (valor_alocacao > 0) {
+            break;
+        }
+        printf("VALOR DE ALOCACAO INVALIDO!\n");
+        system("pause");
+        system("cls");
+    }
+}
+
+void registrar_quilometragem(int &quilometragem)
+{
+    while (true) {
+        printf("Quilometragem: ");
+        scanf("%d", &quilometragem);
+
+        if (quilometragem >= 0) {
+            break;
+        }
+        printf("MODELO INVALIDO!\n");
+        system("pause");
+        system("cls");
+    }
+}
+
+void cadastrar_veiculo(Veiculo veiculos[], int &posicao_veiculo)
+{
+    system("cls");
+
+    registrar_placa(veiculos[posicao_veiculo].placa, veiculos, posicao_veiculo);
+    registrar_tipo(veiculos[posicao_veiculo].tipo);
+    registrar_modelo(veiculos[posicao_veiculo].modelo);
+    registrar_ano_fabricacao(veiculos[posicao_veiculo].ano_fabricacao);
+    registrar_valor_alocacao(veiculos[posicao_veiculo].valor_alocacao);
+    registrar_quilometragem(veiculos[posicao_veiculo].quilometragem);
+
+    system("cls");
+
+    printf("Placa: %s\n", veiculos[posicao_veiculo].placa);
+    printf("Tipo (C-Carro ou M-Moto): %c\n", veiculos[posicao_veiculo].tipo);
+    printf("Modelo: %s\n", veiculos[posicao_veiculo].modelo);
+    printf("Ano: %d\n", veiculos[posicao_veiculo].ano_fabricacao);
+    printf("Valor da alocacao/dia: %.2f\n", veiculos[posicao_veiculo].valor_alocacao);
+    printf("Quilometragem: %d\n\n", veiculos[posicao_veiculo].quilometragem);
+    getchar();
+
+    printf("Veiculo cadastrado com sucesso!\n");
+    system("pause");
+
+    posicao_veiculo++;
+}
 
 int main()
 {
     int dia, mes, ano, hora, min, seg;
-    int posicao = 0;
+    int posicao_cliente = 0, posicao_veiculo = 0;
 
     Cliente clientes[50];
-    Cliente clientes_cadastrados[50];
+    Veiculo veiculos[50];
 
-    menu_principal();
-    return 0;
+    //menu_principal();
+    //return 0;
 
     //data_hora_atual(dia, mes, ano, hora, min, seg);
 
   
-    //cadastro_cliente(clientes_cadastrados, posicao);
-    //cadastro_cliente(clientes_cadastrados, posicao);
+    cadastrar_cliente(clientes, posicao_cliente);
+    //cadastrar_veiculo(veiculos, posicao_veiculo);
+    //cadastrar_veiculo(veiculos, posicao_veiculo);
+    cadastrar_cliente(clientes, posicao_cliente);
 
 
-    //listagem_clientes(clientes_cadastrados, posicao);
+    //listagem_clientes(clientes_cadastrados, posicao_cliente);
     //listagem_veiculos();
     //listagem_locacoes();
 
