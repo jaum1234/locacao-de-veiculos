@@ -31,7 +31,10 @@ struct Veiculo {
     //>= 0
 };
 
-
+struct Locacao {
+    Cliente cliente;
+    Veiculo Veiculo;
+};
 
 //MENU DO CADASTRO DE CLIENTES
 void menu_cadastro_cliente()
@@ -218,10 +221,10 @@ void listagem_clientes(Cliente clientes[], int posicao_cliente)
 
     for (int i = 0; i < posicao_cliente; i ++) {
         printf("%-11s\t\t%s\n", clientes[i].cpf, clientes[i].nome);
-        printf("\t\t\tPlaca: %s\n", "XXX-9999");
-        printf("\t\t\tTipo: %c\n", 'c');
-        printf("\t\t\tModelo: %s\n", "");
-        printf("\t\t\tData da locacao: %02d/%02d/%02d\n", 1, 1, 1);
+        //printf("\t\t\tPlaca: %s\n", "XXX-9999");
+        //printf("\t\t\tTipo: %c\n", 'c');
+        //printf("\t\t\tModelo: %s\n", "");
+        //printf("\t\t\tData da locacao: %02d/%02d/%02d\n", 1, 1, 1);
     }
     printf("--------------------------------------------------");
 }
@@ -257,7 +260,7 @@ void listagem_locacoes()
 
 }
 
-bool is_cpf_repetido(char cpf[], Cliente clientes[], int posicao_cliente)
+bool is_cpf_cadastrado(char cpf[], Cliente clientes[], int posicao_cliente)
 {
     for (int i = 0; i < posicao_cliente; i++) {
         if (strcmp(cpf, clientes[i].cpf) == 0) {
@@ -273,7 +276,7 @@ void registrar_cpf(char cpf[], Cliente clientes[], int posicao_cliente)
         printf("CPF: ");
         gets(cpf);
 
-        if (is_cpf_repetido(cpf, clientes, posicao_cliente)) {
+        if (is_cpf_cadastrado(cpf, clientes, posicao_cliente)) {
             printf("\nERRO NO CADASTRO. CPF JA CADASTRADO!\n");
             system("pause");
             system("cls");
@@ -328,7 +331,7 @@ void cadastrar_cliente(Cliente clientes[], int &posicao_cliente)
     posicao_cliente++;
 }
 
-bool is_placa_repetida(char placa[], Veiculo veiculos[], int posicao)
+bool is_placa_cadastrada(char placa[], Veiculo veiculos[], int posicao)
 {
     for (int i = 0; i < posicao; i++) {
         if (strcmp(placa, veiculos[i].placa) == 0) {
@@ -375,7 +378,7 @@ void registrar_placa(char placa[], Veiculo veiculos[], int posicao_veiculo)
         strupr(placa);
         
 
-        if (is_placa_repetida(placa, veiculos, posicao_veiculo)) {
+        if (is_placa_cadastrada(placa, veiculos, posicao_veiculo)) {
             printf("NAO PODEM EXISTIR DOIS VEICULOS COM A MESMA PLACA!\n");
             system("pause");
             system("cls");
@@ -504,6 +507,25 @@ void cadastrar_veiculo(Veiculo veiculos[], int &posicao_veiculo)
     posicao_veiculo++;
 }
 
+void realizar_locacao(Cliente clientes[], Veiculo veiculos[], int posicao_cliente, int posicao_veiculo)
+{
+    system("cls");
+
+    while (true) {
+        char cpf[12];
+        printf("CPF: ");
+        gets(cpf);
+
+        if (!is_cpf_cadastrado(cpf, clientes, posicao_cliente)) {
+            printf("ERRO NA LOCACAO. CLIENTE NAO CADASTRADO!\n");
+            system("pause");
+            system("cls");
+            continue;
+        }   
+
+    }
+}
+
 int main()
 {
     int dia, mes, ano, hora, min, seg;
@@ -518,13 +540,14 @@ int main()
     //data_hora_atual(dia, mes, ano, hora, min, seg);
 
   
-    cadastrar_cliente(clientes, posicao_cliente);
+    //cadastrar_cliente(clientes, posicao_cliente);
     //cadastrar_veiculo(veiculos, posicao_veiculo);
     //cadastrar_veiculo(veiculos, posicao_veiculo);
     cadastrar_cliente(clientes, posicao_cliente);
 
+    realizar_locacao(clientes, veiculos, posicao_cliente, posicao_veiculo);
 
-    //listagem_clientes(clientes_cadastrados, posicao_cliente);
+    //listagem_clientes(clientes, posicao_cliente);
     //listagem_veiculos();
     //listagem_locacoes();
 
