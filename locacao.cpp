@@ -31,11 +31,6 @@ struct Veiculo {
     //>= 0
 };
 
-struct Locacao {
-    Cliente cliente;
-    Veiculo Veiculo;
-};
-
 //MENU DO CADASTRO DE CLIENTES
 void menu_cadastro_cliente()
 {
@@ -516,13 +511,17 @@ void realizar_locacao(Cliente clientes[], Veiculo veiculos[], int posicao_client
         printf("CPF: ");
         gets(cpf);
 
-        if (!is_cpf_cadastrado(cpf, clientes, posicao_cliente)) {
-            printf("ERRO NA LOCACAO. CLIENTE NAO CADASTRADO!\n");
-            system("pause");
-            system("cls");
-            continue;
-        }   
+        if (is_cpf_cadastrado(cpf, clientes, posicao_cliente)) {
+            break;
+        } 
 
+        printf("ERRO NA LOCACAO. CLIENTE NAO CADASTRADO!\n");
+        system("pause");
+        system("cls");
+    }
+
+    while (true) {
+        
     }
 }
 
