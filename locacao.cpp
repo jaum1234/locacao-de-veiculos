@@ -580,7 +580,7 @@ void registrar_quilometragem(int &quilometragem)
         if (quilometragem >= 0) {
             break;
         }
-        printf("MODELO INVALIDO!\n");
+        printf("QUILOMETRAGEM INVALIDA!\n");
         system("pause");
         system("cls");
     }
@@ -747,6 +747,6 @@ int main()
 
     //listagem_clientes(clientes, posicao_cliente, 2);
     //listagem_veiculos(veiculos, clientes, posicao_veiculo, posicao_cliente);
-    listagem_locacoes(clientes, posicao_cliente, 1);
+    listagem_locacoes(clientes, posicao_cliente, 2);
     
 }

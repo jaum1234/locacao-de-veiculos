@@ -1,3 +1,4 @@
-coura.txt/
-test.exe/
-test.cpp/
+/coura.txt
+/test.exe
+/test.cpp
+/ordenamento-por-cpf.cpp
