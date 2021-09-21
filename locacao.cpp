@@ -278,8 +278,8 @@ int verificar_cliente_associado(char placa[], Cliente clientes[], int posicao_cl
         if (strcmp(placa, clientes[i].veiculo.placa) == 0) {
             return i;
         }
-    }   
-    printf("Nenhum cliente associado.");
+    }
+    return -1;   
 }
 
 void ordenar_por_placa(Veiculo veiculos[], int posicao_veiculo) {
@@ -372,17 +372,16 @@ void listagem_locacoes(Cliente clientes[], int posicao_cliente)
         }
     }
 
-
     printf("--------------------------------------------------\n");
     system("pause");
 
 }
 
-int encontrar_cpf(char cpf[], Cliente clientes[], int posicao_cliente)
+int encontrar_cpf(char cpf[], Cliente clientes[], int tamanho_array_clientes)
 {
-    for (int i = 0; i < posicao_cliente; i++) {
-        if (strcmp(cpf, clientes[i].cpf) == 0) {
-            return i;
+    for (int posicao = 0; posicao < tamanho_array_clientes; posicao++) {
+        if (strcmp(cpf, clientes[posicao].cpf) == 0) {
+            return posicao;
         }
     }
     return -1;
@@ -422,12 +421,20 @@ void registrar_cpf(char cpf[], Cliente clientes[], int posicao_cliente)
             system("cls");
             continue;
         }
-
         break;
     }
 }
 
-void registrar_nome(char nome[])
+bool is_nome_valido(char nome[], Cliente clientes[], int posicao_cliente)
+{
+    if (strlen(nome) < 4 || strlen(nome) > 50) {
+        return false;
+    }
+
+    return true;
+}
+
+void registrar_nome(char nome[], Cliente clientes[], int posicao_cliente)
 {
     while (true) {
         printf("Nome: ");
@@ -438,13 +445,13 @@ void registrar_nome(char nome[])
             menu_principal();
         }
 
-        if (strlen(nome) <= 50) {
-            break;
+        if (!is_nome_valido(nome, clientes, posicao_cliente)) {
+            printf("\nNOME INVALIDO!\n");
+            system("pause");
+            system("cls");
+            continue;
         }
-
-        printf("\nNOME INVALIDO!\n");
-        system("pause");
-        system("cls");
+        break;
     }
 }
 
@@ -454,7 +461,7 @@ void cadastrar_cliente(Cliente clientes[], int &posicao_cliente)
 
     registrar_cpf(clientes[posicao_cliente].cpf, clientes, posicao_cliente);
 
-    registrar_nome(clientes[posicao_cliente].nome);
+    registrar_nome(clientes[posicao_cliente].nome, clientes, posicao_cliente);
 
     system("cls");
 
@@ -469,11 +476,11 @@ void cadastrar_cliente(Cliente clientes[], int &posicao_cliente)
     posicao_cliente++;
 }
 
-int encontrar_placa(char placa[], Veiculo veiculos[], int posicao)
+int encontrar_placa(char placa[], Veiculo veiculos[], int tamanho_array_veiculos)
 {
-    for (int i = 0; i < posicao; i++) {
-        if (strcmp(placa, veiculos[i].placa) == 0) {
-            return i;
+    for (int posicao = 0; posicao < tamanho_array_veiculos; posicao++) {
+        if (strcmp(placa, veiculos[posicao].placa) == 0) {
+            return posicao;
         }
     }
     return -1;
@@ -515,7 +522,6 @@ void registrar_placa(char placa[], Veiculo veiculos[], int posicao_veiculo)
 
         strupr(placa);
         
-
         if (encontrar_placa(placa, veiculos, posicao_veiculo) >= 0) {
             printf("NAO PODEM EXISTIR DOIS VEICULOS COM A MESMA PLACA!\n");
             system("pause");
@@ -524,7 +530,7 @@ void registrar_placa(char placa[], Veiculo veiculos[], int posicao_veiculo)
         }
 
         if (!is_placa_valida(placa)) {
-            printf("\nESSE FORMATO DE PLACA NAO E VALIDO!\n- CUIDADO COM OS ESPACOS\n");
+            printf("\nESSE FORMATO DE PLACA NAO EH VALIDO!\n- CUIDADO COM OS ESPACOS\n");
             system("pause");
             system("cls");
             continue;
@@ -749,8 +755,85 @@ void realizar_locacao(
         dia, mes, ano
     );
 
-    system("pause");
+    system("pause"); 
+}
+
+bool is_bissexto(int ano) {
+    return (ano % 4 == 0 && ano % 100 != 0) || (ano % 400 ==0);
+}
+
+int get_qtd_dias_mes(int mes, int ano)
+{
+    int qtd_dias_mes = 31;
+
+    switch (mes) {
+        case 2:
+            if (is_bissexto(ano)) {
+                return qtd_dias_mes -= 2;
+                break;
+            }
+            return qtd_dias_mes -= 3;
+            break;
+        case 4: 
+        case 6: 
+        case 9: 
+        case 11:
+            qtd_dias_mes--;
+            break;
+    }
+
+    return qtd_dias_mes;
+}
+
+int get_total_dias_locacao(
+    int dia_locacao,
+    int mes_locacao,
+    int ano_locacao,
+    int dia_devolucao,
+    int mes_devolucao,
+    int ano_devolucao
+) {
+
+    int total_dias = 0;
+    int ultimo_mes_ano = 12;
+
+    int ano_atual = ano_locacao;
+    for (int mes_atual = mes_locacao; mes_atual <= ultimo_mes_ano; mes_atual++) {
+        switch (mes_atual) {
+            case 2:
+                if (is_bissexto(ano_atual)) {
+                    total_dias += 29;
+                    break;
+                }
+                total_dias += 28;
+                break;
+            case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+                total_dias += 31;
+                break;
+            case 4: case 6: case 9: case 11:
+                total_dias += 30;
+                break;
+        }
+
+
+        if (mes_atual == mes_devolucao && ano_atual == ano_devolucao) {
+            break;
+        }
+
+        if (mes_atual == ultimo_mes_ano) {
+            ano_atual++;
+            mes_atual = 0;
+        }
+    }
+
+    int devolucao_qtd_dias_mes = get_qtd_dias_mes(mes_devolucao, ano_devolucao);
     
+    int excesso_dias_locacao = dia_locacao;
+    int excesso_dias_devolucao = devolucao_qtd_dias_mes - dia_devolucao;
+
+    total_dias -= (excesso_dias_locacao + excesso_dias_devolucao);
+
+    return total_dias;
 }
 
 void reaizar_devolucao(Cliente clientes[], Veiculo veiculos[], int posicao_cliente, int posicao_veiculo)
@@ -758,7 +841,7 @@ void reaizar_devolucao(Cliente clientes[], Veiculo veiculos[], int posicao_clien
     system("cls");
 
     char cpf[12];
-    int dia_devolucao, mes_devolucao, ano_devolucao = 0;
+    int dia_devolucao = 0, mes_devolucao = 0, ano_devolucao = 0;
     int quilometragem_devolucao;
     int posicao_cliente_associado;
 
@@ -784,30 +867,22 @@ void reaizar_devolucao(Cliente clientes[], Veiculo veiculos[], int posicao_clien
         break;
     }
 
-
     while(true) {
-        int dia = 31;
         printf("Data de devolucao (ex: 20 12 2021): ");
         scanf("%d %d %d", &dia_devolucao, &mes_devolucao, &ano_devolucao);
         getchar();
 
-        if (mes_devolucao > 12) {
-            printf("\nO MES NAO PODE SER MAIOR DO QUE 12!\n");
+        if (mes_devolucao < 1 || mes_devolucao > 12) {
+            printf("\nO MES PRECISA ESTAR NO INTERVALO ENTRE 1 E 12!\n");
             system("pause");
             system("cls");
             continue;
         }
 
-        switch (mes_devolucao) {
-        case 2:
-            dia-=3;
-            break;
-        case 4: case 6: case 9: case 11:
-            dia--;
-        }
+        int devolucao_qtd_dias_mes = get_qtd_dias_mes(mes_devolucao, ano_devolucao);
 
-        if (dia_devolucao > dia) {
-            printf("\nO DIA NAO PODE SER MAIOR DO QUE %d!\n", dia);
+        if (dia_devolucao > devolucao_qtd_dias_mes || dia_devolucao < 1) {
+            printf("\nO DIA PRECISA ESTAR NO ENTERVALO ENTRE 1 E %d!\n", devolucao_qtd_dias_mes);
             system("pause");
             system("cls");
             continue;
@@ -850,13 +925,18 @@ void reaizar_devolucao(Cliente clientes[], Veiculo veiculos[], int posicao_clien
         break;
     }
 
-    int difenca_anos = ano_devolucao - clientes[posicao_cliente_associado].veiculo.ano_locacao;
-    int diferenca_meses = (mes_devolucao - clientes[posicao_cliente_associado].veiculo.mes_locacao) + (difenca_anos*12);
-    int diferenca_dias = (dia_devolucao - clientes[posicao_cliente_associado].veiculo.dia_locacao) + (diferenca_meses*30);
+    int total_dias_locacao = get_total_dias_locacao(
+        clientes[posicao_cliente_associado].veiculo.dia_locacao,
+        clientes[posicao_cliente_associado].veiculo.mes_locacao,
+        clientes[posicao_cliente_associado].veiculo.ano_locacao,
+        dia_devolucao,
+        mes_devolucao,
+        ano_devolucao
+    );
 
     int difereca_quilometragem = quilometragem_devolucao - clientes[posicao_cliente_associado].veiculo.quilometragem;
 
-    float valor_alocacao = diferenca_dias * clientes[posicao_cliente_associado].veiculo.valor_alocacao;
+    float valor_alocacao = total_dias_locacao*clientes[posicao_cliente_associado].veiculo.valor_alocacao;
     float valor_quilometragem = difereca_quilometragem*1.5;
     float pagamento_total = valor_alocacao + valor_quilometragem; 
 
@@ -886,7 +966,7 @@ void reaizar_devolucao(Cliente clientes[], Veiculo veiculos[], int posicao_clien
     veiculos[posicao_veiculo_associado].em_locacao = false;
     printf("DEVOLUCAO REALIZADA COM SUCESSO:\n");
     printf("No. de dia: %d\nQuilometragem rodada: %d km\nValor a pagar: %.2f + %.2f = %.2f\n\n",
-        diferenca_dias, 
+        total_dias_locacao, 
         difereca_quilometragem,
         valor_alocacao,
         valor_quilometragem,
@@ -972,34 +1052,14 @@ int main()
     Veiculo veiculos[50];
 
     data_hora_atual(dia, mes, ano, hora, min, seg);
-    //menu_principal();
-    //return 0;
 
-
-  
-    cadastrar_cliente(clientes, posicao_cliente);
     //cadastrar_cliente(clientes, posicao_cliente);
-    //cadastrar_cliente(clientes, posicao_cliente);
-    //listagem_clientes(clientes, posicao_cliente, 2);
-////
     cadastrar_veiculo(veiculos, posicao_veiculo, ano);
-    //cadastrar_veiculo(veiculos, posicao_veiculo);
-    //cadastrar_veiculo(veiculos, posicao_veiculo);
-    //listagem_veiculos(veiculos, clientes, posicao_veiculo, posicao_cliente, 1);
-////
-    realizar_locacao(clientes, veiculos, posicao_cliente, posicao_veiculo, dia, mes, ano);
-    ////realizar_locacao(clientes, veiculos, posicao_cliente, posicao_veiculo, dia, mes, ano);
-    ////realizar_locacao(clientes, veiculos, posicao_cliente, posicao_veiculo, dia, mes, ano);
-//  // listagem_locacoes(clientes, posicao_cliente);
-////
-    reaizar_devolucao(clientes, veiculos, posicao_cliente, posicao_veiculo);
-    ////reaizar_devolucao(clientes, veiculos, posicao_cliente, posicao_veiculo);
-////
-    //listagem_locacoes(clientes, posicao_cliente);
-////
-    //listagem_clientes(clientes, posicao_cliente, 1);
-    //excluir_veiculo(veiculos, posicao_veiculo);
-    //listagem_veiculos(veiculos, clientes, posicao_veiculo, posicao_cliente, 2);
     //excluir_cliente(clientes, posicao_cliente);
-    //listagem_clientes(clientes, posicao_cliente, 1);
+    //excluir_veiculo(veiculos, posicao_veiculo);
+    //realizar_locacao(clientes, veiculos, posicao_cliente, posicao_veiculo, dia, mes, ano); 
+    //reaizar_devolucao(clientes, veiculos, posicao_cliente, posicao_veiculo);
+    //listagem_clientes(clientes, posicao_cliente, 2);
+    //listagem_veiculos(veiculos, clientes, posicao_veiculo, posicao_cliente, 1);
+    //listagem_locacoes(clientes, posicao_cliente);  
 }
