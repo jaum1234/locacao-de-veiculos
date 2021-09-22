@@ -391,7 +391,7 @@ void registrar_tipo(char &tipo)
         printf("Tipo (C-Carro ou M-Moto): ");
         scanf("%c", &tipo);
         getchar();
-        toupper(tipo);
+        tipo = toupper(tipo);
         if (tipo == 'C' || tipo == 'M') {
             break;
         }
