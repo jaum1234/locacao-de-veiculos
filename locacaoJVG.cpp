@@ -365,7 +365,7 @@ void registrar_placa(char placa[], Veiculo veiculos[], int posicao_veiculo, Clie
             printf("NAO PODEM EXISTIR DOIS VEICULOS COM A MESMA PLACA!\n");
             system("pause");
             system("cls");
-            continue;
+            menu_principal(clientes, veiculos, posicao_cliente, posicao_veiculo);
         }
 
         if (!is_placa_valida(placa)) {
