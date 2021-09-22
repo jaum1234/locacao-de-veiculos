@@ -535,7 +535,7 @@ void realizar_locacao(
             );
             system("pause");
             system("cls");
-            continue;
+            menu_principal(clientes, veiculos, posicao_cliente, posicao_veiculo);
         }
 
         break;
@@ -575,7 +575,7 @@ void realizar_locacao(
             );
             system("pause");
             system("cls");
-            continue;
+            menu_principal(clientes, veiculos, posicao_cliente, posicao_veiculo);
         }
 
        break;
