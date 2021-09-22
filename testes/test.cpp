@@ -707,7 +707,7 @@ void realizar_devolucao(Cliente clientes[], Veiculo veiculos[], int posicao_clie
             printf("ERRO NA DEVOLUCAO. CLIENTE NAO POSSUI LOCACAO!\n");
             system("pause");
             system("cls");
-            continue;
+            menu_principal(clientes, veiculos, posicao_cliente, posicao_veiculo);
         }
 
         break;
