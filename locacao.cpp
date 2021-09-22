@@ -1075,7 +1075,7 @@ void menu_principal(Cliente clientes[], Veiculo veiculos[], int posicao_cliente,
         locacao_devolucao(clientes, veiculos, posicao_cliente, posicao_veiculo);
 
     } else if (numero_menu == 4) {
-        exit(0);
+        exit(EXIT_SUCCESS);
     }
     
 }
