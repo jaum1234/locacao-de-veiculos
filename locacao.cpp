@@ -254,7 +254,7 @@ void registrar_cpf(char cpf[], Cliente clientes[], int posicao_cliente, int posi
             printf("\nERRO NO CADASTRO. CPF JA CADASTRADO!\n");
             system("pause");
             system("cls");
-            continue;
+            menu_principal(clientes, veiculos, posicao_cliente, posicao_veiculo);
         }
 
         if (!is_cpf_valido(cpf)) {
